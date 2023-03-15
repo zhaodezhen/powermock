@@ -152,9 +152,9 @@ func (p *Plugin) List(ctx context.Context) (map[string]string, error) {
 
 	data := make(map[string]string, len(rst))
 	for _, item := range rst {
-		b, err := base64.StdEncoding.DecodeString(item.Mock)
+		b, err := base64.URLEncoding.DecodeString(item.Mock)
 		if err != nil {
-			p.LogError(nil, "base64.StdEncoding.DecodeString, err %s", err.Error())
+			p.LogError(nil, "base64.URLEncoding.DecodeString, err %s", err.Error())
 		}
 
 		data[item.Path] = string(b)
