@@ -39,7 +39,7 @@ type Message interface {
 }
 
 // Request defines the request structure
-type Request struct {
+type Request struct { // 条件判断要匹配的请求结构
 	Protocol Protocol          `json:"protocol"`
 	Method   string            `json:"method"`
 	Host     string            `json:"host"`

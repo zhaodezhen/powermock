@@ -16,6 +16,7 @@ package bootstrap
 
 import (
 	"context"
+	pluginmongo "github.com/bilibili-base/powermock/pkg/pluginregistry/storage/mongo"
 
 	"github.com/prometheus/client_golang/prometheus"
 
@@ -79,6 +80,16 @@ func Startup(
 		plugin, err := pluginredis.New(cfg.Plugin.Redis, log, registerer)
 		if err != nil {
 			log.LogFatal(nil, "failed to create storage plugin(redis): %s", err)
+			return err
+		}
+		storagePlugin = plugin
+	}
+
+	if cfg.Plugin.Mongo.IsEnabled() {
+		log.LogInfo(nil, "* start to create plugin(redis)")
+		plugin, err := pluginmongo.New(cfg.Plugin.Mongo, log, registerer)
+		if err != nil {
+			log.LogFatal(nil, "failed to create storage plugin(mongo): %s", err)
 			return err
 		}
 		storagePlugin = plugin

@@ -93,10 +93,10 @@ func (s *Plugin) Match(ctx context.Context, request *interact.Request, condition
 		return false, nil
 	}
 	c := core.NewContext(request)
-	for _, item := range simple.Items {
-		operandX := core.Render(c, item.OperandX)
-		operandY := core.Render(c, item.OperandY)
-		matched, err := core.Match(operandX, item.Operator, operandY)
+	for _, item := range simple.Items { // 读取数据和规则匹配
+		operandX := core.Render(c, item.OperandX)                     //要判断的字段
+		operandY := core.Render(c, item.OperandY)                     //要判断的值
+		matched, err := core.Match(operandX, item.Operator, operandY) // 规则匹配 关系运算符和正则匹配
 		if err != nil {
 			return false, err
 		}

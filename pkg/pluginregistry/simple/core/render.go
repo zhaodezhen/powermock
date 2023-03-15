@@ -16,10 +16,10 @@ package core
 
 import (
 	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	"strings"
 
 	"github.com/brianvoe/gofakeit"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/tidwall/gjson"
 
 	"github.com/bilibili-base/powermock/pkg/interact"
@@ -38,8 +38,9 @@ func NewContext(request *interact.Request) *Context {
 }
 
 // RenderWithRequest is used to render $request... variable
-func RenderWithRequest(ctx *Context, path string) string {
+func RenderWithRequest(ctx *Context, path string) string { // 从请求里面取参数
 	data, err := jsoniter.Marshal(ctx.Request)
+	//data, err := json.Marshal(ctx.Request)
 	if err != nil {
 		return ""
 	}
@@ -74,7 +75,7 @@ func SplitWithFirstSegment(s string, split string) (string, string) {
 }
 
 // Render is used to render variables based on context
-func Render(ctx *Context, path string) string {
+func Render(ctx *Context, path string) string { //从请求里面取参，或者从mock 里面取参
 	scope, subPath := SplitWithFirstSegment(path, ".")
 	switch scope {
 	case "$request":

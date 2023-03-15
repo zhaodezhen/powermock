@@ -355,7 +355,7 @@ func (s *Manager) getMatchedCase(ctx context.Context, request *interact.Request,
 			if condition == nil {
 				return mockCase, nil
 			}
-			matched, err := plugin.Match(ctx, request, condition)
+			matched, err := plugin.Match(ctx, request, condition) // 获取条件后匹配 ,分带script 和不带的
 			if err != nil {
 				return nil, newPluginError(codes.Internal, plugin.Name(), err)
 			}

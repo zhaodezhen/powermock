@@ -44,6 +44,9 @@ func Match(operandX string, operator string, operandY string) (bool, error) {
 		return Float64(operandX) < Float64(operandY), nil
 	case "<=":
 		return Float64(operandX) <= Float64(operandY), nil
+	//case "!=":
+	//	return Float64(operandX) != Float64(operandY), nil
+
 	case "regex":
 		expr, err := regexp.Compile(operandY)
 		if err != nil {

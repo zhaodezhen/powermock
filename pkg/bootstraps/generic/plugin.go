@@ -20,6 +20,7 @@ import (
 	pluginsgrpc "github.com/bilibili-base/powermock/pkg/pluginregistry/grpc"
 	pluginshttp "github.com/bilibili-base/powermock/pkg/pluginregistry/http"
 	pluginssimple "github.com/bilibili-base/powermock/pkg/pluginregistry/simple"
+	pluginmongo "github.com/bilibili-base/powermock/pkg/pluginregistry/storage/mongo"
 	pluginredis "github.com/bilibili-base/powermock/pkg/pluginregistry/storage/redis"
 	pluginrediscluster "github.com/bilibili-base/powermock/pkg/pluginregistry/storage/rediscluster"
 	"github.com/bilibili-base/powermock/pkg/util"
@@ -28,6 +29,7 @@ import (
 // PluginConfig defines the plugin config
 type PluginConfig struct {
 	Redis        *pluginredis.Config
+	Mongo        *pluginmongo.Config
 	RedisCluster *pluginrediscluster.Config
 	Simple       *pluginssimple.Config
 	GRPC         *pluginsgrpc.Config

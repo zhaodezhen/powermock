@@ -1,0 +1,33 @@
+log:
+  pretty: true
+  level: debug
+grpcmockserver:
+  enable: true
+  address: 0.0.0.0:30002
+  protomanager:
+    protoimportpaths: []
+    protodir: ./apis
+httpmockserver:
+  enable: true
+  address: 0.0.0.0:30003
+apimanager:
+  grpcaddress: 0.0.0.0:30000
+  httpaddress: 0.0.0.0:30001
+pluginregistry: { }
+plugin:
+  redis:
+    enable: false
+    addr: 127.0.0.1:6379
+    password: ""
+    db: 10
+    prefix: /mockserver/
+
+  mongo:
+    enable: true
+    host: "localhost"
+    port: "27017"
+    user: "root"
+    password: "223238"
+    db: "runner_go"
+    timeout: 10
+    maxpoolconn: 64

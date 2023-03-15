@@ -15,6 +15,7 @@
 package bootstrap
 
 import (
+	pluginmongo "github.com/bilibili-base/powermock/pkg/pluginregistry/storage/mongo"
 	"github.com/spf13/pflag"
 
 	pluginsgrpc "github.com/bilibili-base/powermock/pkg/pluginregistry/grpc"
@@ -29,6 +30,7 @@ import (
 // PluginConfig defines the plugin config
 type PluginConfig struct {
 	Redis        *pluginredis.Config
+	Mongo        *pluginmongo.Config
 	RedisCluster *pluginrediscluster.Config
 	Simple       *pluginssimple.Config
 	GRPC         *pluginsgrpc.Config

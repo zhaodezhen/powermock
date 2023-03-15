@@ -92,7 +92,7 @@ func New(cfg *Config,
 }
 
 // ServeHTTP is used to implement the interface of http.Handler
-func (s *MockServer) ServeHTTP(w http.ResponseWriter, request *http.Request) {
+func (s *MockServer) ServeHTTP(w http.ResponseWriter, request *http.Request) { // mock 服务器 getaway
 	s.LogInfo(map[string]interface{}{
 		"path":    request.URL.String(),
 		"host":    request.Host,
@@ -104,7 +104,7 @@ func (s *MockServer) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 		sendError(w, http.StatusInternalServerError, err)
 		return
 	}
-	resp, err := s.apiManager.MockResponse(request.Context(), &interact.Request{
+	resp, err := s.apiManager.MockResponse(request.Context(), &interact.Request{ //组装-后续条件判断可能会取里面值
 		Protocol: interact.ProtocolHTTP,
 		Method:   request.Method,
 		Host:     request.Host,
