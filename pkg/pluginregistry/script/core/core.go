@@ -69,6 +69,23 @@ func MockResponseByJavascript(ctx context.Context, request *interact.Request, re
 	return nil
 }
 
+// RunJs To test
+func RunJs(script string) {
+
+	value, err := RunScript(context.TODO(), v8go.NewContext(), script)
+	if err != nil {
+		fmt.Printf("err:%s \n", err.Error())
+		return
+	}
+	responseRaw, err := value.MarshalJSON()
+	if err != nil {
+		fmt.Printf("err:%s \n", err.Error())
+		return
+	}
+
+	fmt.Println(responseRaw) //执行成功
+}
+
 // RunScript is used to run javascript with context
 func RunScript(ctx context.Context, v8Context *v8go.Context, script string) (*v8go.Value, error) {
 	valCh := make(chan *v8go.Value, 1)

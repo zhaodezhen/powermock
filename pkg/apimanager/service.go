@@ -202,7 +202,7 @@ func (s *Manager) MatchAPI(host, path, method string) (*v1alpha1.MockAPI, bool) 
 	apis := s.apis
 	s.lock.RUnlock()
 
-	var match mux.RouteMatch
+	var match mux.RouteMatch // 匹配mock 接口是否存在 如果不存在就返回
 	matched := m.Match(&http.Request{
 		Method: method,
 		URL:    &url.URL{Path: path},
@@ -212,7 +212,7 @@ func (s *Manager) MatchAPI(host, path, method string) (*v1alpha1.MockAPI, bool) 
 		return nil, false
 	}
 
-	api := apis[match.Route.GetName()]
+	api := apis[match.Route.GetName()] // 如果mock接口存在，再根据 uk 获取mock规则
 	if api != nil {
 		return api, true
 	}

@@ -12,6 +12,7 @@ package mongo
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/bilibili-base/powermock/pkg/pluginregistry"
 	"github.com/bilibili-base/powermock/pkg/util/logger"
@@ -105,28 +106,67 @@ func (p *Plugin) Name() string {
 	return "mongo"
 }
 
+// getOneByUK Get a piece of data through the uniqueKey
+func getOneByUK(ctx context.Context, db *mongo.Database, key string) (bool, error) {
+	docRes := db.Collection("mock").FindOne(ctx, bson.D{{"uniquekey", key}})
+
+	if docRes.Err() != nil {
+		if docRes.Err() == mongo.ErrNoDocuments {
+			return false, nil
+		}
+		return false, docRes.Err()
+	}
+
+	return true, nil
+}
+
 func (p *Plugin) Set(ctx context.Context, key string, val string) error {
-	//TODO implement me
-	panic("implement me")
+	has, err := getOneByUK(ctx, p.client, key)
+	if err != nil {
+		p.LogError(nil, "failed to Set-get mongo err: %s", err)
+	}
+
+	data := MockData{}
+	json.Unmarshal([]byte(val), &data)
+	decodeMockVal := base64.URLEncoding.EncodeToString([]byte(val))
+	data.Mock = decodeMockVal
+
+	if has {
+
+		update := bson.D{{"$set",
+			data,
+		}}
+		_, err := p.client.Collection("mock").UpdateOne(ctx, bson.D{{"uniquekey", key}}, update)
+		if err != nil {
+			p.LogError(nil, "failed to Set-update mongo err: %s", err)
+		}
+		return err
+	}
+
+	_, err = p.client.Collection("mock").InsertOne(ctx, data)
+	if err != nil {
+		p.LogError(nil, "failed to Set-insert mongo err: %s", err)
+	}
+	return err
 }
 
 func (p *Plugin) Delete(ctx context.Context, key string) error {
-	//TODO implement me
-	panic("implement me")
+	_, err := p.client.Collection("mock").DeleteOne(ctx, bson.D{{"uniquekey", key}})
+	return err
 }
 
 type MockData struct {
-	Path      string
-	Method    []string
-	UniqueKey string
+	Path      string `json:"path"`
+	Method    string `json:"method"`
+	UniqueKey string `json:"uniqueKey"`
 	Mock      string
 }
 
-func getAllMock(db *mongo.Database) []*MockData {
+func getAllMock(ctx context.Context, db *mongo.Database) []*MockData {
 	//findOptions := options.Find()
 	//findOptions.SetLimit(10)
 
-	cur, err := db.Collection("mock").Find(context.TODO(), bson.D{})
+	cur, err := db.Collection("mock").Find(ctx, bson.D{})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -148,7 +188,7 @@ func getAllMock(db *mongo.Database) []*MockData {
 
 //List 查询出所有的，返回map结构 key=path
 func (p *Plugin) List(ctx context.Context) (map[string]string, error) {
-	rst := getAllMock(p.client)
+	rst := getAllMock(ctx, p.client)
 
 	data := make(map[string]string, len(rst))
 	for _, item := range rst {
@@ -157,7 +197,7 @@ func (p *Plugin) List(ctx context.Context) (map[string]string, error) {
 			p.LogError(nil, "base64.URLEncoding.DecodeString, err %s", err.Error())
 		}
 
-		data[item.Path] = string(b)
+		data[item.UniqueKey] = string(b)
 	}
 	return data, nil
 }
