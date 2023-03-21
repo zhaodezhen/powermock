@@ -263,6 +263,7 @@ func (s *Manager) setupHTTPServer(ctx context.Context, cancelFunc func()) error 
 	}
 	s.LogInfo(nil, "starting api manager on http address: %s", addr)
 	serverMux := runtime.NewServeMux()
+	// 注册http handle 通过GRPC 实现接口
 	err := v1alpha1.RegisterMockHandlerFromEndpoint(context.TODO(), serverMux, s.cfg.GRPCAddress, []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
 		return err
@@ -276,6 +277,11 @@ func (s *Manager) setupHTTPServer(ctx context.Context, cancelFunc func()) error 
 	}, func() error {
 		return server.Shutdown(context.TODO())
 	})
+
+	//err := v1alpha1.RegisterMockHandlerServer(context.TODO(), serverMux, s) // 上面已经增加http 接口，走的GRPC 协议，所以这里不增加了
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }
 
